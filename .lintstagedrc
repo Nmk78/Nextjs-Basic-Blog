@@ -1,0 +1,4 @@
+{
+  "*.{ts,tsx}": ["bun run lint", "bun run typecheck"],
+  "*.{ts,tsx,js,json}": ["prettier --write"]
+}
