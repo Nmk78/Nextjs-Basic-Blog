@@ -1,30 +1,18 @@
 'use server';
 
-import { signIn } from '@/lib/auth';
 import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { signInSchema, signUpSchema } from '@/lib/validations';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
+/** Validates credentials only. Use signIn('credentials', ...) from next-auth/react in the client to actually sign in. */
 export async function signInAction(data: z.infer<typeof signInSchema>) {
   const validatedFields = signInSchema.safeParse(data);
-
   if (!validatedFields.success) {
     return { error: 'Invalid fields' };
   }
-
-  try {
-    await signIn('credentials', {
-      email: validatedFields.data.email,
-      password: validatedFields.data.password,
-      redirect: false,
-    });
-    return { success: true };
-  } catch (error) {
-    console.log('🚀 ~ signInAction ~ error:', error);
-    return { error: 'Invalid credentials' };
-  }
+  return { success: true, data: validatedFields.data };
 }
 
 export async function signUpAction(data: z.infer<typeof signUpSchema>) {
@@ -58,5 +46,5 @@ export async function signUpAction(data: z.infer<typeof signUpSchema>) {
 }
 
 export async function signOutAction() {
-  await signIn();
+  redirect('/api/auth/signout?callbackUrl=/');
 }

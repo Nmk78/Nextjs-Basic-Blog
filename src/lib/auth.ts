@@ -115,4 +115,3 @@ export async function auth() {
   return getServerSession(authOptions);
 }
 export const getSession = () => getServerSession(authOptions);
-export { signIn, signOut } from 'next-auth/react';

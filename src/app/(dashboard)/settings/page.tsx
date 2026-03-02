@@ -1,4 +1,4 @@
-import { auth, signOut } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,16 +52,9 @@ export default async function SettingsPage() {
             <CardDescription>Security settings</CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              action={async () => {
-                'use server';
-                await signOut({ redirect: true, callbackUrl: '/' });
-              }}
-            >
-              <Button variant="destructive" type="submit">
-                Sign Out
-              </Button>
-            </form>
+            <Button variant="destructive" asChild>
+              <Link href="/api/auth/signout?callbackUrl=/">Sign Out</Link>
+            </Button>
           </CardContent>
         </Card>
         <Card>

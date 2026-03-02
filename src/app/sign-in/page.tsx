@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +11,6 @@ import { signIn } from 'next-auth/react';
 import { Github, Chrome, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function SignInPage() {
-  const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -43,8 +41,8 @@ export default function SignInPage() {
       title: 'Welcome back!',
       description: 'You have successfully signed in.',
     });
-    router.push('/dashboard');
-    router.refresh();
+    // Full page redirect so the dashboard loads with the new session (avoids stuck loading in production)
+    window.location.href = '/dashboard';
   }
 
   async function handleOAuthSignIn(provider: string) {
