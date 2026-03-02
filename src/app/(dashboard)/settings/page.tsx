@@ -19,7 +19,7 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle>Profile</CardTitle>
             <CardDescription>Manage your account settings</CardDescription>
-          </CardHeader>
+          </CardHeader> 
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm font-medium">Name</p>

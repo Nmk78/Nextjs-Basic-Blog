@@ -37,6 +37,21 @@ export async function getUserPosts() {
   });
 }
 
+export async function getPostById(id: string) {
+  const session = await getSession();
+  if (!session?.user?.id) return null;
+
+  const post = await db.blogPost.findUnique({
+    where: { id },
+  });
+
+  if (!post || post.authorId !== session.user.id) {
+    return null;
+  }
+
+  return post;
+}
+
 export async function createPost(data: {
   title: string;
   content: string;
