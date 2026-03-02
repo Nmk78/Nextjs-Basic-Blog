@@ -27,7 +27,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       )}
 
       <div className="container mx-auto px-4">
-        <div className="mx-auto -mt-20 max-w-3xl">
+        <div className="mx-auto mt-10 max-w-3xl">
           <header className="mb-12 rounded-xl border bg-card p-6 shadow-sm md:p-8">
             <h1 className="mb-6 text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
               {post.title}
