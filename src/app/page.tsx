@@ -4,12 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted">
-      <div className="container px-4 py-16">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-background to-muted">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="blur-100 absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/5 opacity-60" />
+
+      <div className="container relative z-10 px-4 py-16">
         <div className="mx-auto max-w-3xl space-y-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight md:text-6xl">NextJS Starter Template</h1>
           <p className="text-xl text-muted-foreground">
-            A production-ready starter template with authentication, API keys, and more.
+            A production-ready starter template with authentication, blog, and more.
           </p>
           <div className="flex justify-center gap-4">
             <Button asChild size="lg">
@@ -17,6 +21,12 @@ export default function HomePage() {
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link href="/sign-up">Sign Up</Link>
+            </Button>
+          </div>
+
+          <div className="flex justify-center">
+            <Button asChild variant="ghost" size="lg">
+              <Link href="/blog">View Blog</Link>
             </Button>
           </div>
 
@@ -34,12 +44,12 @@ export default function HomePage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>API Keys</CardTitle>
-                <CardDescription>Secure access</CardDescription>
+                <CardTitle>Blog</CardTitle>
+                <CardDescription>Markdown posts</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Generate and manage API keys for your applications
+                  Create and publish blog posts with Markdown support
                 </p>
               </CardContent>
             </Card>

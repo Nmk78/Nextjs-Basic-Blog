@@ -1,12 +1,12 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { apiKeySchema } from '@/lib/validations';
 import { z } from 'zod';
 
 export async function getApiKeys() {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session?.user?.id) {
     return [];
@@ -27,10 +27,10 @@ export async function getApiKeys() {
 }
 
 export async function createApiKey(data: z.infer<typeof apiKeySchema>) {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: 'Unauthorized' };
+    return { error: 'UngetSessionorized' };
   }
 
   const validatedFields = apiKeySchema.safeParse(data);
@@ -61,10 +61,10 @@ export async function createApiKey(data: z.infer<typeof apiKeySchema>) {
 }
 
 export async function deleteApiKey(id: string) {
-  const session = await auth();
+  const session = await getSession();
 
   if (!session?.user?.id) {
-    return { error: 'Unauthorized' };
+    return { error: 'UngetSessionorized' };
   }
 
   const apiKey = await db.apiKey.findUnique({

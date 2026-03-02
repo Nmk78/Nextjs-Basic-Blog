@@ -10,8 +10,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordStrength } from '@/components/password-strength';
 import { signUpAction } from '@/features/auth/actions';
 import { useToast } from '@/components/ui/use-toast';
-import { Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
-import { Github, Chrome } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, XCircle, Loader2, Github, Chrome } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 
 export default function SignUpPage() {
@@ -58,15 +57,12 @@ export default function SignUpPage() {
     const result = await signUpAction(data);
 
     if (result?.error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: result.error,
-      });
+      toast({ variant: 'destructive', title: 'Sign up failed', description: result.error });
       setLoading(false);
       return;
     }
 
+    toast({ title: 'Account created!', description: 'You can now sign in with your credentials.' });
     router.push('/sign-in');
   }
 
@@ -75,9 +71,13 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-background to-muted px-4 py-12">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="blur-100 absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/5 opacity-60" />
+
+      <Card className="relative z-10 w-full max-w-md">
+        <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
           <CardDescription>Sign up with your email or OAuth provider</CardDescription>
         </CardHeader>
@@ -167,18 +167,16 @@ export default function SignUpPage() {
 
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <div className="relative">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Confirm your password"
-                  required
-                  autoComplete="new-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                required
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
               {confirmPassword && password !== confirmPassword && (
                 <p className="text-xs text-red-500">Passwords do not match</p>
               )}
@@ -195,9 +193,7 @@ export default function SignUpPage() {
                 {requirements.map((req, i) => (
                   <div
                     key={i}
-                    className={`flex items-center gap-1 text-xs ${
-                      req.met ? 'text-green-500' : 'text-muted-foreground'
-                    }`}
+                    className={`flex items-center gap-1 text-xs ${req.met ? 'text-green-500' : 'text-muted-foreground'}`}
                   >
                     {req.met ? (
                       <CheckCircle className="h-3 w-3" />
@@ -211,13 +207,19 @@ export default function SignUpPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading || !allMet}>
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </Button>
           </form>
 
           <div className="text-center text-sm">
             Already have an account?{' '}
-            <Link href="/sign-in" className="font-medium underline">
+            <Link href="/sign-in" className="font-medium text-primary hover:underline">
               Sign in
             </Link>
           </div>

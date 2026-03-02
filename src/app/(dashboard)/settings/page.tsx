@@ -64,6 +64,20 @@ export default async function SettingsPage() {
             </form>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Blog</CardTitle>
+            <CardDescription>Manage your blog posts</CardDescription>
+          </CardHeader>
+          <CardContent className="flex gap-2">
+            <Button asChild>
+              <Link href="/dashboard/blog">View Posts</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/dashboard/blog/new">New Post</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

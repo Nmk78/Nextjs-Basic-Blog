@@ -1,11 +1,11 @@
-import { NextAuthOptions } from 'next-auth';
-import NextAuth from 'next-auth';
+import { getServerSession, NextAuthOptions } from 'next-auth';
 import { db } from '@/lib/db';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
@@ -111,5 +111,8 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === 'development',
 };
 
-export const auth = NextAuth(authOptions);
+export async function auth() {
+  return getServerSession(authOptions);
+}
+export const getSession = () => getServerSession(authOptions);
 export { signIn, signOut } from 'next-auth/react';

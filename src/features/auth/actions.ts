@@ -22,6 +22,7 @@ export async function signInAction(data: z.infer<typeof signInSchema>) {
     });
     return { success: true };
   } catch (error) {
+    console.log('🚀 ~ signInAction ~ error:', error);
     return { error: 'Invalid credentials' };
   }
 }

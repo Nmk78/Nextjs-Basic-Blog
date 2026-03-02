@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signInAction } from '@/features/auth/actions';
 import { useToast } from '@/components/ui/use-toast';
 import { signIn } from 'next-auth/react';
 import { Github, Chrome, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -24,18 +23,26 @@ export default function SignInPage() {
     e.preventDefault();
     setLoading(true);
 
-    const result = await signInAction({ email, password });
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
 
     if (result?.error) {
       toast({
         variant: 'destructive',
         title: 'Sign in failed',
-        description: result.error,
+        description: 'Invalid email or password',
       });
       setLoading(false);
       return;
     }
 
+    toast({
+      title: 'Welcome back!',
+      description: 'You have successfully signed in.',
+    });
     router.push('/dashboard');
     router.refresh();
   }
@@ -45,8 +52,12 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted px-4 py-12">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-background to-muted">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="blur-100 absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/5 opacity-60" />
+
+      <Card className="relative z-10 mx-4 w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
@@ -133,8 +144,7 @@ export default function SignInPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...
                 </>
               ) : (
                 'Sign In'
