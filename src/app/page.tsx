@@ -29,7 +29,7 @@ export default function HomePage() {
 
       <section className="container mx-auto px-4 py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-12 text-center text-3xl font-bold">What You'll Find Here</h2>
+          <h2 className="mb-12 text-center text-3xl font-bold">What You&apos;ll Find Here</h2>
           <div className="grid gap-8 md:grid-cols-3">
             <div className="text-center">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { cn } from '@/lib/utils';
-import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -22,7 +22,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold">Hacker News</span>
+          <span className="text-xl font-bold">My Blog</span>
         </Link>
 
         <nav className="hidden items-center gap-4 md:flex">
@@ -38,14 +38,6 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          {status === 'authenticated' && (
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm">
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                Dashboard
-              </Button>
-            </Link>
-          )}
           {status === 'authenticated' ? (
             <div className="flex items-center gap-2">
               {session?.user?.image ? (

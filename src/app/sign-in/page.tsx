@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { signIn } from 'next-auth/react';
-import { Github, Chrome, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Chrome, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function SignInPage() {
   const { toast } = useToast();
@@ -28,10 +28,12 @@ export default function SignInPage() {
     });
 
     if (result?.error) {
+      const isRateLimited =
+        result.error.includes('Too many login attempts') || result.error.includes('Try again');
       toast({
         variant: 'destructive',
-        title: 'Sign in failed',
-        description: 'Invalid email or password',
+        title: isRateLimited ? 'Account Locked' : 'Sign in failed',
+        description: result.error || 'Invalid email or password',
       });
       setLoading(false);
       return;
@@ -41,7 +43,6 @@ export default function SignInPage() {
       title: 'Welcome back!',
       description: 'You have successfully signed in.',
     });
-    // Full page redirect so the dashboard loads with the new session (avoids stuck loading in production)
     window.location.href = '/dashboard';
   }
 
@@ -61,24 +62,17 @@ export default function SignInPage() {
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('google')}
-              className="w-full"
-            >
-              <Chrome className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('github')}
-              className="w-full"
-            >
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
+          <div className="rounded-lg bg-muted p-3 text-center text-sm">
+            <p className="font-medium">Single Sign-On (SSO)</p>
+            <p className="text-xs text-muted-foreground">
+              Use your Google account to sign in quickly and securely
+            </p>
           </div>
+
+          <Button variant="outline" onClick={() => handleOAuthSignIn('google')} className="w-full">
+            <Chrome className="mr-2 h-4 w-4" />
+            Continue with Google
+          </Button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -106,12 +100,12 @@ export default function SignInPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link
+                {/* <Link
                   href="/forgot-password"
                   className="text-xs text-muted-foreground hover:text-primary"
                 >
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
               <div className="relative">
                 <Input

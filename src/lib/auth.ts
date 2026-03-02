@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
+import { checkLoginAttempts, recordFailedLogin, recordSuccessfulLogin } from './rate-limit';
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
@@ -21,11 +22,8 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.AUTH_GOOGLE_ID || '',
       clientSecret: process.env.AUTH_GOOGLE_SECRET || '',
     }),
-    // GitHubProvider({
-    //   clientId: process.env.AUTH_GITHUB_ID || '',
-    //   clientSecret: process.env.AUTH_GITHUB_SECRET || '',
-    // }),
     CredentialsProvider({
+      id: 'credentials',
       name: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -36,19 +34,30 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const email = credentials.email as string;
+
+        const loginCheck = await checkLoginAttempts(email);
+        if (!loginCheck.success) {
+          throw new Error(loginCheck.message || 'Too many login attempts');
+        }
+
         const user = await db.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email },
         });
 
         if (!user || !user.password) {
+          await recordFailedLogin(email);
           return null;
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password as string, user.password);
 
         if (!isPasswordValid) {
+          await recordFailedLogin(email);
           return null;
         }
+
+        await recordSuccessfulLogin(email);
 
         return {
           id: user.id,
@@ -85,7 +94,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account }) {
-      if (account?.provider !== 'credentials') {
+      if (account?.provider !== 'credentials' && account?.provider !== 'passkey') {
         const existingUser = await db.user.findUnique({
           where: { email: user.email! },
         });

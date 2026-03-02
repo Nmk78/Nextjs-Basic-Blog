@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { PasswordStrength } from '@/components/password-strength';
 import { signUpAction } from '@/features/auth/actions';
 import { useToast } from '@/components/ui/use-toast';
-import { Eye, EyeOff, CheckCircle, XCircle, Loader2, Github, Chrome } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, XCircle, Loader2, Chrome } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 
 export default function SignUpPage() {
@@ -79,27 +79,20 @@ export default function SignUpPage() {
       <Card className="relative z-10 w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-          <CardDescription>Sign up with your email or OAuth provider</CardDescription>
+          <CardDescription>Sign up with email or use SSO for quick registration</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('google')}
-              className="w-full"
-            >
-              <Chrome className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleOAuthSignIn('github')}
-              className="w-full"
-            >
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
+          <div className="rounded-lg bg-muted p-3 text-center text-sm">
+            <p className="font-medium">Single Sign-On (SSO)</p>
+            <p className="text-xs text-muted-foreground">
+              Register quickly with your Google account
+            </p>
           </div>
+
+          <Button variant="outline" onClick={() => handleOAuthSignIn('google')} className="w-full">
+            <Chrome className="mr-2 h-4 w-4" />
+            Continue with Google
+          </Button>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

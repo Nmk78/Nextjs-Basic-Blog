@@ -23,6 +23,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   isTwoFactorEnabled Boolean @default(false)
+  loginAttempts Int       @default(0)
+  lockedUntil   DateTime?
+  loginIp       String?
+  lastLoginAt   DateTime?
 
   accounts           Account[]
   sessions           Session[]
