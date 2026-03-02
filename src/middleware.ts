@@ -4,9 +4,14 @@ import type { NextRequest } from 'next/server';
 const PUBLIC_ROUTES = ['/', '/sign-in', '/sign-up', '/blog'];
 const PROTECTED_ROUTES = ['/dashboard', '/settings'];
 
+const SESSION_COOKIE_NAMES = [
+  'next-auth.session-token', // development (HTTP)
+  '__Secure-next-auth.session-token', // production (HTTPS)
+] as const;
+
 export function middleware(request: NextRequest) {
   const { nextUrl } = request;
-  const isLoggedIn = !!request.cookies.get('next-auth.session-token');
+  const isLoggedIn = SESSION_COOKIE_NAMES.some((name) => request.cookies.get(name));
 
   const isApiAuthRoute = nextUrl.pathname.startsWith('/api/auth');
   const isPublicRoute = PUBLIC_ROUTES.some((route) => {
