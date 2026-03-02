@@ -8,7 +8,7 @@ export async function getPublishedPosts() {
   return db.blogPost.findMany({
     where: { published: true },
     include: {
-      getSessionor: {
+      author: {
         select: { name: true, image: true },
       },
     },
@@ -20,7 +20,7 @@ export async function getPostBySlug(slug: string) {
   return db.blogPost.findUnique({
     where: { slug },
     include: {
-      getSessionor: {
+      author: {
         select: { name: true, image: true, email: true },
       },
     },
@@ -32,7 +32,7 @@ export async function getUserPosts() {
   if (!session?.user?.id) return [];
 
   return db.blogPost.findMany({
-    where: { getSessionorId: session.user.id },
+    where: { authorId: session.user.id },
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -46,7 +46,7 @@ export async function createPost(data: {
 }) {
   const session = await getSession();
   if (!session?.user?.id) {
-    return { error: 'UngetSessionorized' };
+    return { error: 'Unauthorized' };
   }
 
   const slug = data.title
@@ -68,7 +68,7 @@ export async function createPost(data: {
       excerpt: data.excerpt,
       coverImage: data.coverImage,
       published: data.published || false,
-      getSessionorId: session.user.id,
+      authorId: session.user.id,
       publishedAt: data.published ? new Date() : null,
     },
   });
@@ -91,11 +91,11 @@ export async function updatePost(
 ) {
   const session = await getSession();
   if (!session?.user?.id) {
-    return { error: 'UngetSessionorized' };
+    return { error: 'Unauthorized' };
   }
 
   const post = await db.blogPost.findUnique({ where: { id } });
-  if (!post || post.getSessionorId !== session.user.id) {
+  if (!post || post.authorId !== session.user.id) {
     return { error: 'Not found' };
   }
 
@@ -117,11 +117,11 @@ export async function updatePost(
 export async function deletePost(id: string) {
   const session = await getSession();
   if (!session?.user?.id) {
-    return { error: 'UngetSessionorized' };
+    return { error: 'Unauthorized' };
   }
 
   const post = await db.blogPost.findUnique({ where: { id } });
-  if (!post || post.getSessionorId !== session.user.id) {
+  if (!post || post.authorId !== session.user.id) {
     return { error: 'Not found' };
   }
 
