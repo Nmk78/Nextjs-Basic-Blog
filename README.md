@@ -128,6 +128,7 @@ src/
 DATABASE_URL="mongodb://localhost:27017/nextjs-starter"
 AUTH_SECRET="your-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
+# Set AUTH_TRUST_HOST=true in production (e.g. Vercel) to avoid OAuth state mismatch
 AUTH_GOOGLE_ID=""
 AUTH_GOOGLE_SECRET=""
 AUTH_GITHUB_ID=""

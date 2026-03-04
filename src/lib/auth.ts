@@ -9,8 +9,10 @@ import { checkLoginAttempts, recordFailedLogin, recordSuccessfulLogin } from './
 // Increase OpenID discovery timeout (default 3500ms can fail on slow networks)
 custom.setHttpOptionsDefaults({ timeout: 10000 });
 
+// For serverless (e.g. Vercel): set AUTH_TRUST_HOST=true in production so OAuth state cookie and callback URL match
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  useSecureCookies: process.env.NEXTAUTH_URL?.startsWith('https://') ?? process.env.NODE_ENV === 'production',
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
