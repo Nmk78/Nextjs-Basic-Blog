@@ -5,8 +5,10 @@ import { getSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 export async function getPublishedPosts() {
+  // Only include posts whose author still exists (avoids "author is required, got null" for orphaned posts)
+  const userIds = await db.user.findMany({ select: { id: true } }).then((rows) => rows.map((u) => u.id));
   return db.blogPost.findMany({
-    where: { published: true },
+    where: { published: true, authorId: { in: userIds } },
     include: {
       author: {
         select: { name: true, image: true },
@@ -17,14 +19,15 @@ export async function getPublishedPosts() {
 }
 
 export async function getPostBySlug(slug: string) {
-  return db.blogPost.findUnique({
+  const post = await db.blogPost.findUnique({
     where: { slug },
-    include: {
-      author: {
-        select: { name: true, image: true, email: true },
-      },
-    },
   });
+  if (!post) return null;
+  const author = await db.user.findUnique({
+    where: { id: post.authorId },
+    select: { name: true, image: true, email: true },
+  });
+  return { ...post, author };
 }
 
 export async function getUserPosts() {

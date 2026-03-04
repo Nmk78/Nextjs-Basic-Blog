@@ -34,7 +34,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
               <div className="flex items-center gap-3">
-                {post.author.image && (
+                {post.author?.image && (
                   <img
                     src={post.author.image}
                     alt={post.author.name || ''}
@@ -42,7 +42,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   />
                 )}
                 <div>
-                  <p className="font-medium text-foreground">{post.author.name || 'Anonymous'}</p>
+                  <p className="font-medium text-foreground">{post.author?.name || 'Anonymous'}</p>
                   <p className="text-sm">{formatDate(post.publishedAt || post.createdAt)}</p>
                 </div>
               </div>
