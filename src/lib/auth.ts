@@ -1,9 +1,13 @@
 import { getServerSession, NextAuthOptions } from 'next-auth';
+import { custom } from 'openid-client';
 import { db } from '@/lib/db';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import bcrypt from 'bcryptjs';
 import { checkLoginAttempts, recordFailedLogin, recordSuccessfulLogin } from './rate-limit';
+
+// Increase OpenID discovery timeout (default 3500ms can fail on slow networks)
+custom.setHttpOptionsDefaults({ timeout: 10000 });
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
